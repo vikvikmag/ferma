@@ -1,0 +1,26 @@
+﻿<?xml version="1.0" encoding="iso-8859-1"?> 
+<data>
+	<LoaderMax name="dynamicLoaderMax" load="false">
+		<ImageLoader name="clover1" url="../html/img/clover/1.png" />
+		<ImageLoader name="clover2" url="../html/img/clover/2.png" />
+		<ImageLoader name="clover3" url="../html/img/clover/3.png" />
+		<ImageLoader name="clover4" url="../html/img/clover/4.png" />
+		<ImageLoader name="clover5" url="../html/img/clover/5.png" />
+		<ImageLoader name="potato1" url="../html/img/potato/1.png" />
+		<ImageLoader name="potato2" url="../html/img/potato/2.png" />
+		<ImageLoader name="potato3" url="../html/img/potato/3.png" />
+		<ImageLoader name="potato4" url="../html/img/potato/4.png" />
+		<ImageLoader name="potato5" url="../html/img/potato/5.png" />
+		<ImageLoader name="sunflower1" url="../html/img/sunflower/1.png" />
+		<ImageLoader name="sunflower2" url="../html/img/sunflower/2.png" />
+		<ImageLoader name="sunflower3" url="../html/img/sunflower/3.png" />
+		<ImageLoader name="sunflower4" url="../html/img/sunflower/4.png" />
+		<ImageLoader name="sunflower5" url="../html/img/sunflower/5.png" />
+		<ImageLoader name="BG" url="../html/img/BG.jpg" />
+	</LoaderMax>
+	<plants>
+		<plant type="clover" lit_name="клевер" level="5" />
+		<plant type="potato" lit_name="картофель" level="5" />
+		<plant type="sunflower" lit_name="подсолнух" level="5" />
+	</plants>
+</data>
