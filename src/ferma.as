@@ -13,6 +13,7 @@ package
 	
 	import view.country.Country;
 	
+	[SWF(width="807", height="700", frameRate="30", backgroundColor="#EEEEBB")]
 	public class ferma extends Sprite
 	{
 		private var _loader:LoaderMax = new LoaderMax({

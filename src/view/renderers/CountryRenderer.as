@@ -11,21 +11,21 @@ package view.renderers
 	
 	import lui.LUIWidget;
 	
-	import resources.Image;
+	import resources.ImageResource;
 
 	public class CountryRenderer extends LUIWidget
 	{
-		private var _image:Image;
-		private var _clover:Image;
+		private var _image:ImageResource;
+		private var _clover:ImageResource;
 		private var _bg:Bitmap;
 		
 		private var countLoader:int = 0;
 		
 		public function CountryRenderer()
 		{
-			_image = new Image("BG");
+			_image = new ImageResource("BG");
 			_image.setListeners(onComplete, onError, onProgress);
-			_clover = new Image("clover1");
+			_clover = new ImageResource("clover1");
 			_clover.setListeners(onComplete, onError, onProgress);
 		}
 		

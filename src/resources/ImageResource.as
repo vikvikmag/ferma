@@ -7,7 +7,7 @@ package resources
 	import flash.display.Bitmap;
 	import flash.display.BitmapData;
 
-	public class Image
+	public class ImageResource
 	{
 		private var _imageLoader:ImageLoader;
 		private var _type:String;
@@ -15,9 +15,9 @@ package resources
 		private var _onError:Function;
 		private var _onProgress:Function;	
 		private var _bitmap:Bitmap;
-		private var _bitmapData:BitmapData;
+		private var _bitmapData:BitmapData;		
 		
-		public function Image(type:String)
+		public function ImageResource(type:String)
 		{
 			_type = type;
 			_imageLoader = LoaderMax.getLoader(type);
@@ -27,6 +27,9 @@ package resources
 			_imageLoader.load();
 		}
 		
+		/**
+		 * 	Можно установить обработчики событий
+		 */ 
 		public function setListeners(onComplete:Function, onError:Function = null, 
 									 onProgress:Function = null):void
 		{
@@ -41,12 +44,7 @@ package resources
 		public function get bitmap():Bitmap
 		{			
 			return new Bitmap(_bitmapData);
-		}
-		
-		public function get bitmapData():BitmapData
-		{
-			return _bitmapData;
-		}		
+		}	
 		
 		private function onComplete(event:LoaderEvent):void
 		{
