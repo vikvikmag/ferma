@@ -5,49 +5,53 @@ package view.renderers
 	import com.greensock.loading.LoaderMax;
 	import com.greensock.loading.display.ContentDisplay;
 	
+	import flash.display.Bitmap;
+	import flash.display.BitmapData;
 	import flash.display.DisplayObject;
 	
 	import lui.LUIWidget;
+	
+	import resources.Image;
 
 	public class CountryRenderer extends LUIWidget
 	{
-		private var _imageLoader:ImageLoader;
-		private var _bg:ContentDisplay;
+		private var _image:Image;
+		private var _clover:Image;
+		private var _bg:Bitmap;
+		
+		private var countLoader:int = 0;
 		
 		public function CountryRenderer()
 		{
-			_imageLoader = LoaderMax.getLoader("BG");
-			_imageLoader.addEventListener(LoaderEvent.COMPLETE, onComplete);
-			_imageLoader.addEventListener(LoaderEvent.ERROR, onError);
-			_imageLoader.addEventListener(LoaderEvent.PROGRESS, onProgress);
-			_imageLoader.load();
+			_image = new Image("BG");
+			_image.setListeners(onComplete, onError, onProgress);
+			_clover = new Image("clover1");
+			_clover.setListeners(onComplete, onError, onProgress);
 		}
 		
 		private function onComplete(event:LoaderEvent):void
 		{
-			_imageLoader.removeEventListener(LoaderEvent.COMPLETE, onComplete);
-			_imageLoader.removeEventListener(LoaderEvent.ERROR, onError);
-			_imageLoader.removeEventListener(LoaderEvent.PROGRESS, onProgress);
-			_bg = _imageLoader.content;
-			
-			addChild(_bg);
-			
-			resize();
+			_bg = _image.bitmap;
+			countLoader++;
+			if (countLoader >= 2)
+			{
+				addChild(_bg);
+				
+				resize();
+			}			
 		}
 		
 		private function onProgress(event:LoaderEvent):void
 		{
-			trace("CountryRenderer: ",_imageLoader.bytesLoaded, "/", _imageLoader.bytesTotal);
+			trace("CountryRenderer: ", event.target.bytesLoaded, "/", event.target.bytesTotal);
 		}
 		
 		private function onError(event:LoaderEvent):void
 		{
-			trace("BG поля не загрузилось");
 		}
 		
 		override public function resize():void
 		{
-			//_width = _bg.
 		}
 	}
 }
