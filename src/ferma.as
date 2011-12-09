@@ -5,13 +5,12 @@ package
 	import com.greensock.loading.LoaderMax;
 	import com.greensock.loading.XMLLoader;
 	
-	import flash.display.DisplayObject;
 	import flash.display.Sprite;
 	import flash.system.Security;
 	
 	import model.book.PlantsBook;
 	
-	import view.country.Country;
+	import view.MainStage;
 	
 	[SWF(width="807", height="700", frameRate="30", backgroundColor="#EEEEBB")]
 	public class ferma extends Sprite
@@ -63,12 +62,13 @@ package
 			trace("error occured with " + event.target + ": " + event.text);
 		}
 		
-		private var _country:Country;
+		private var _mainStage:MainStage;
 		
 		private function initStage():void
 		{
-			_country = new Country();
-			addChild(_country);
+			_mainStage = new MainStage();
+			_mainStage.setSize(807, 700);
+			addChild(_mainStage);
 		}
 	}
 }
