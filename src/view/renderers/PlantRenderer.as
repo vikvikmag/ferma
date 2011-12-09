@@ -4,6 +4,7 @@ package view.renderers
 	
 	import flash.display.Bitmap;
 	import flash.display.Sprite;
+	import flash.events.Event;
 	
 	import lui.LUIWidget;
 	
@@ -50,6 +51,7 @@ package view.renderers
 			_iconPlant = _imageResource.bitmap;
 			_iconContainer.addChild(_iconPlant);
 			resize();
+			dispatchEvent(new Event(Event.COMPLETE));
 		}
 		
 		public function update():void
