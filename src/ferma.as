@@ -8,6 +8,7 @@ package
 	import flash.display.Sprite;
 	import flash.system.Security;
 	
+	import model.book.ImagesBook;
 	import model.book.PlantsBook;
 	
 	import view.MainStage;
@@ -50,6 +51,7 @@ package
 			_xml = LoaderMax.getContent("xmlDoc");
 			
 			PlantsBook.instance.init(_xml);
+			ImagesBook.instance.init(_xml);
 			
 			//Assuming there was an  node in the XML, get the associated image...
 			//var image:ImageLoader = LoaderMax.getLoader("clover1");

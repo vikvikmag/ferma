@@ -1,5 +1,7 @@
 package model.items
 {
+	import model.book.ImagesBook;
+
 	public class Plant
 	{
 		private var _type:String;
@@ -60,5 +62,10 @@ package model.items
 			plant.serverId = _serverId;
 			return plant;
 		}
+		
+		public function get imageProperty():ImageProperty
+		{
+			return ImagesBook.instance.getImagePropertyByName(type + String(level));
+		}			
 	}
 }

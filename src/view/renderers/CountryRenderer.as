@@ -23,24 +23,10 @@ package view.renderers
 		private var _container:Sprite = new Sprite();
 		
 		public function CountryRenderer()
-		{
-			_container.addEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);
-			_container.addEventListener(MouseEvent.MOUSE_UP, onMouseUp);
-			_container.addEventListener(MouseEvent.ROLL_OUT, onMouseUp);
-			
+		{			
 			addChild(_container);
 			_imageResource = new ImageResource("BG");
 			_imageResource.setListeners(onComplete, onError, onProgress);			
-		}
-		
-		private function onMouseDown(event:MouseEvent):void
-		{
-			_container.startDrag();
-		}
-		
-		private function onMouseUp(event:MouseEvent):void
-		{
-			_container.stopDrag();
 		}
 		
 		private function onComplete(event:LoaderEvent):void

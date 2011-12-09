@@ -8,6 +8,7 @@ package view.renderers
 	
 	import lui.LUIWidget;
 	
+	import model.items.ImageProperty;
 	import model.items.Plant;
 	
 	import resources.ImageResource;
@@ -19,10 +20,21 @@ package view.renderers
 		private var _iconPlant:Bitmap;
 		private var _iconContainer:Sprite = new Sprite();
 		private var _level:int;
+		private var _isNeedOffset:Boolean = false;
 		
 		public function PlantRenderer()
 		{
 			addChild(_iconContainer);
+		}
+		
+		public function set isNeedOffset(value:Boolean):void
+		{
+			_isNeedOffset = value;
+		}
+		
+		public function get isNeedOffset():Boolean
+		{
+			return _isNeedOffset;
 		}
 		
 		public function set data(value:Object):void
@@ -67,6 +79,17 @@ package view.renderers
 		{
 			_width = _iconPlant.width;
 			_height = _iconPlant.height;
+			if (_isNeedOffset)
+			{
+				var imageProp:ImageProperty = (data as Plant).imageProperty;
+				_iconContainer.x = -imageProp.cx;
+				_iconContainer.y = -imageProp.cy;
+			}
+			else
+			{
+				_iconContainer.x = 0;
+				_iconContainer.y = 0;
+			}
 		}
 	}
 }
