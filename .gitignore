@@ -1,0 +1,9 @@
+.gitignore
+.project
+.settings/
+bin/
+bin-debug/
+bin-release/
+.actionScriptProperties
+.sourceMate
+.sourceMateMetadataSettings
