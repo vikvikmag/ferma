@@ -8,6 +8,8 @@ package model.items
 		private var _level:int;
 		private var _litName:String;
 		private var _serverId:int;
+		private var _tileX:int;
+		private var _tileY:int;
 		
 		public function Plant()
 		{
@@ -53,6 +55,26 @@ package model.items
 			return _serverId;
 		}
 		
+		public function set tileX(value:int):void
+		{
+			_tileX = value;
+		}
+		
+		public function get tileX():int
+		{
+			return _tileX;
+		}
+		
+		public function set tileY(value:int):void
+		{
+			_tileY = value;
+		}
+		
+		public function get tileY():int
+		{
+			return _tileY;
+		}
+		
 		public function clone():Plant
 		{
 			var plant:Plant = new Plant();
@@ -60,6 +82,8 @@ package model.items
 			plant.level = _level;
 			plant.litName = _litName;
 			plant.serverId = _serverId;
+			plant.tileX = _tileX;
+			plant.tileY = _tileY;
 			return plant;
 		}
 		
