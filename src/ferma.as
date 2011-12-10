@@ -5,6 +5,8 @@ package
 	import com.greensock.loading.LoaderMax;
 	import com.greensock.loading.XMLLoader;
 	
+	import controller.GameController;
+	
 	import flash.display.Sprite;
 	import flash.system.Security;
 	
@@ -33,6 +35,7 @@ package
 		private function initData():void
 		{
 			_loader.append(new XMLLoader("../xml/doc.xml", {name:"xmlDoc"}));
+			_loader.append(new XMLLoader("../xml/UserData.xml", {name:"xmlUserData"}));
 			_loader.load();
 		}
 		
@@ -41,26 +44,24 @@ package
 			return _xml;
 		}
 		
-		private function progressHandler(event:LoaderEvent):void {
+		private function progressHandler(event:LoaderEvent):void 
+		{
 			trace("progress: " + event.target.progress);
 		}
 		
-		private function completeHandler(event:LoaderEvent):void {
-			//trace("load complete. XML content: " + LoaderMax.getContent("xmlDoc"));
-			
+		private function completeHandler(event:LoaderEvent):void 
+		{
 			_xml = LoaderMax.getContent("xmlDoc");
 			
 			PlantsBook.instance.init(_xml);
 			ImagesBook.instance.init(_xml);
-			
-			//Assuming there was an  node in the XML, get the associated image...
-			//var image:ImageLoader = LoaderMax.getLoader("clover1");
-			//addChild(image);
+			GameController.instance.parseUserData(LoaderMax.getContent("xmlUserData"));
 			
 			initStage();
 		}
 		
-		private function errorHandler(event:LoaderEvent):void {
+		private function errorHandler(event:LoaderEvent):void 
+		{
 			trace("error occured with " + event.target + ": " + event.text);
 		}
 		

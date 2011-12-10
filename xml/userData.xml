@@ -1,0 +1,8 @@
+<country>
+	<plant type="clover" id="2777" x="0" y="0" level="1" process_end="3550000" /> 
+	<plant type="sunflower" id="2778" x="0" y="5" level="3" process_end="13454000" /> 
+	<plant type="potato" id="2779" x="0" y="10" level="5" process_end="12560000" /> 
+	<plant type="clover" id="2780" x="5" y="0" level="2" process_end="10751000" /> 
+	<plant type="sunflower" id="2781" x="5" y="5" level="4" process_end="40455000" /> 
+	<plant type="potato" id="2782" x="5" y="10" level="1" process_end="37761000" />
+</country>
