@@ -3,28 +3,39 @@ package view.renderers
 	import com.greensock.events.LoaderEvent;
 	
 	import flash.display.Bitmap;
-	import flash.display.Sprite;
 	import flash.events.Event;
+	import flash.events.MouseEvent;
+	import flash.filters.GlowFilter;
+	import flash.geom.Point;
 	
 	import lui.LUIWidget;
 	
 	import model.items.ImageProperty;
 	import model.items.Plant;
 	
+	import myLib.controls.Button;
+	
 	import resources.ImageResource;
+	
+	import view.PopupManager;
 
 	public class PlantRenderer extends LUIWidget
 	{
 		private var _imageResource:ImageResource;
 		private var _data:Object;
 		private var _iconPlant:Bitmap;
-		private var _iconContainer:Sprite = new Sprite();
+		private var _iconContainer:LUIWidget = new LUIWidget();
+		private var _btnContainer:LUIWidget = new LUIWidget();
 		private var _level:int;
 		private var _isNeedOffset:Boolean = false;
+		private var _isNeedListeners:Boolean = false;
+		private var _pickUpBtn:Button;
+		private var _cancel:Button;
 		
 		public function PlantRenderer()
 		{
 			addChild(_iconContainer);
+			addChild(_btnContainer);
 		}
 		
 		public function set isNeedOffset(value:Boolean):void
@@ -35,6 +46,83 @@ package view.renderers
 		public function get isNeedOffset():Boolean
 		{
 			return _isNeedOffset;
+		}
+		
+		public function set isNeedListeners(value:Boolean):void
+		{
+			_isNeedListeners = value;
+			if (_isNeedListeners)
+			{
+				addListeners();
+				creatBtns();				
+			}
+			else
+			{
+				removeListeners();
+			}
+		}
+		
+		/**
+		 * 	Создает дополнительные кнопки. "Собрать урожай"
+		 */ 
+		private function creatBtns():void
+		{
+			_pickUpBtn = new Button();
+			_pickUpBtn.text = "Собрать урожай";
+			_cancel = new Button();
+			_cancel.text = "Отмена";
+			_cancel.addEventListener(MouseEvent.CLICK, onCancelClick);
+		}
+		
+		public function get isNeedListeners():Boolean
+		{
+			return _isNeedListeners;
+		}
+		
+		private function addListeners():void
+		{
+			addEventListener(MouseEvent.ROLL_OVER, onRollOverRenderer);
+			addEventListener(MouseEvent.ROLL_OUT, onRollOutRenderer);
+			addEventListener(MouseEvent.CLICK, onClickRenderer);
+		}
+		
+		private function removeListeners():void
+		{
+			removeEventListener(MouseEvent.ROLL_OVER, onRollOverRenderer);
+			removeEventListener(MouseEvent.ROLL_OUT, onRollOutRenderer);
+			removeEventListener(MouseEvent.CLICK, onClickRenderer);
+		}
+		
+		private function onRollOverRenderer(event:MouseEvent):void
+		{
+			filters = [new GlowFilter(0xffffff, 0.7, 15, 15)];
+		}
+		
+		private function onRollOutRenderer(event:MouseEvent):void
+		{
+			filters = null;
+		}
+		
+		private function onClickRenderer(event:MouseEvent):void
+		{
+			var point:Point = localToGlobal(new Point(x,y)); 
+			_pickUpBtn.x = point.x;
+			_pickUpBtn.y = point.y;
+			_cancel.x = point.x;
+			_cancel.y = point.y + _pickUpBtn.height + 5;
+			
+			_btnContainer.addChild(_pickUpBtn);
+			_btnContainer.addChild(_cancel);
+			//PopupManager.addPopUp(_pickUpBtn);
+			//PopupManager.addPopUp(_cancel, false);
+		}
+		
+		private function onCancelClick(event:MouseEvent):void
+		{
+			_btnContainer.removeChild(_pickUpBtn);
+			_btnContainer.removeChild(_cancel);
+			//PopupManager.removePopUp(_pickUpBtn);
+			//PopupManager.removePopUp(_cancel);
 		}
 		
 		public function set data(value:Object):void
@@ -77,8 +165,8 @@ package view.renderers
 		
 		override public function resize():void
 		{
-			_width = _iconPlant.width;
-			_height = _iconPlant.height;
+			_iconContainer.width = _btnContainer.width = _width = _iconPlant.width;
+			_iconContainer.height = _btnContainer.height = _height = _iconPlant.height;
 			if (_isNeedOffset)
 			{
 				var imageProp:ImageProperty = (data as Plant).imageProperty;
