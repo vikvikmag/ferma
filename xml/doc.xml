@@ -1,21 +1,21 @@
 ﻿<?xml version="1.0" encoding="iso-8859-1"?> 
 <data>
 	<LoaderMax name="dynamicLoaderMax" load="false">
-		<ImageLoader name="clover1" url="../html/img/clover/1.png" cx="" cy="" />
-		<ImageLoader name="clover2" url="../html/img/clover/2.png" cx="" cy="" />
-		<ImageLoader name="clover3" url="../html/img/clover/3.png" cx="" cy="" />
-		<ImageLoader name="clover4" url="../html/img/clover/4.png" cx="" cy="" />
-		<ImageLoader name="clover5" url="../html/img/clover/5.png" cx="" cy="" />
-		<ImageLoader name="potato1" url="../html/img/potato/1.png" cx="" cy="" />
-		<ImageLoader name="potato2" url="../html/img/potato/2.png" cx="" cy="" />
-		<ImageLoader name="potato3" url="../html/img/potato/3.png" cx="" cy="" />
-		<ImageLoader name="potato4" url="../html/img/potato/4.png" cx="" cy="" />
-		<ImageLoader name="potato5" url="../html/img/potato/5.png" cx="" cy="" />
-		<ImageLoader name="sunflower1" url="../html/img/sunflower/1.png" cx="" cy="" />
-		<ImageLoader name="sunflower2" url="../html/img/sunflower/2.png" cx="" cy="" />
-		<ImageLoader name="sunflower3" url="../html/img/sunflower/3.png" cx="" cy="" />
-		<ImageLoader name="sunflower4" url="../html/img/sunflower/4.png" cx="" cy="" />
-		<ImageLoader name="sunflower5" url="../html/img/sunflower/5.png" cx="50" cy="75" />
+		<ImageLoader name="clover1" url="../html/img/clover/1.png" cx="48" cy="50" />
+		<ImageLoader name="clover2" url="../html/img/clover/2.png" cx="48" cy="4" />
+		<ImageLoader name="clover3" url="../html/img/clover/3.png" cx="48" cy="9" />
+		<ImageLoader name="clover4" url="../html/img/clover/4.png" cx="48" cy="13" />
+		<ImageLoader name="clover5" url="../html/img/clover/5.png" cx="48" cy="13" />
+		<ImageLoader name="potato1" url="../html/img/potato/1.png" cx="48" cy="5" />
+		<ImageLoader name="potato2" url="../html/img/potato/2.png" cx="48" cy="5" />
+		<ImageLoader name="potato3" url="../html/img/potato/3.png" cx="48" cy="13" />
+		<ImageLoader name="potato4" url="../html/img/potato/4.png" cx="48" cy="23" />
+		<ImageLoader name="potato5" url="../html/img/potato/5.png" cx="48" cy="28" />
+		<ImageLoader name="sunflower1" url="../html/img/sunflower/1.png" cx="48" cy="4" />
+		<ImageLoader name="sunflower2" url="../html/img/sunflower/2.png" cx="48" cy="20" />
+		<ImageLoader name="sunflower3" url="../html/img/sunflower/3.png" cx="48" cy="31" />
+		<ImageLoader name="sunflower4" url="../html/img/sunflower/4.png" cx="48" cy="58" />
+		<ImageLoader name="sunflower5" url="../html/img/sunflower/5.png" cx="48" cy="75" />
 		<ImageLoader name="BG" url="../html/img/BG.jpg" />
 	</LoaderMax>
 	<plants>
