@@ -7,13 +7,17 @@ package view.country
 	import as3isolib.display.scene.IsoScene;
 	import as3isolib.geom.Pt;
 	
+	import controller.GameController;
+	
 	import flash.display.Sprite;
 	import flash.events.Event;
 	import flash.events.MouseEvent;
+	import flash.utils.Dictionary;
 	
 	import lui.LUIWidget;
 	
-	import model.book.PlantsBook;
+	import model.UserData;
+	import model.event.UserDataEvent;
 	import model.items.Plant;
 	
 	import view.renderers.CountryRenderer;
@@ -29,7 +33,8 @@ package view.country
 		private var _box:IsoBox;
 		private var _isoView:IsoView;
 		private var _container:Sprite = new Sprite();
-		private var _cloverRenderer:PlantRenderer;
+		private var _userData:UserData = GameController.instance.userData;
+		private var _plantRenderers:Dictionary = new Dictionary();
 		
 		public function CountryWidget()
 		{
@@ -44,15 +49,10 @@ package view.country
 			_isoGrid.showOrigin = true;
 			_isoGrid.setGridSize(13,13,1);
 			_isoGrid.cellSize = CELL_SIZE;
-			
-			_box = new IsoBox();
-			_box.setSize(50,50,100);
-			//_box.moveTo(100,0,0);
-			
+						
 			//for scene
 			_isoScene = new IsoScene();
 			_isoScene.addChild(_isoGrid);
-			_isoScene.addChild(_box);
 			_isoScene.render();
 
 			//for view
@@ -66,28 +66,7 @@ package view.country
 			_container.addEventListener(MouseEvent.MOUSE_UP, onMouseUp);
 			_container.addEventListener(MouseEvent.ROLL_OUT, onMouseUp);
 			
-			_cloverRenderer = new PlantRenderer();
-			_cloverRenderer.isNeedOffset = true;
-			var plant:Plant = PlantsBook.instance.getPlantByType("sunflower").clone();
-			plant.level = 5;
-			_cloverRenderer.data = plant;
-			_cloverRenderer.addEventListener(Event.COMPLETE, onUpdate);
-		}
-		
-		private function onUpdate(event:Event):void
-		{
-			var iso:IsoSprite = new IsoSprite();
-			_cloverRenderer.opaqueBackground = 0xff0000;
-			iso.sprites = [_cloverRenderer];
-			iso.setSize(50, 50, 83);
-			iso.moveTo(10, 110, 0);
-			
-			var box:IsoBox = new IsoBox();
-			box.setSize(50, 50, 50);
-			box.moveTo(0, 100, 0);
-			_isoScene.addChild(box);
-			_isoScene.addChild(iso);
-			_isoScene.render();
+			GameController.instance.addEventListener(UserDataEvent.UPDATE_USER_DATA, onUpdate);
 		}
 		
 		private function onMouseDown(event:MouseEvent):void
@@ -98,7 +77,6 @@ package view.country
 		private function onMouseUp(event:MouseEvent):void
 		{
 			_container.stopDrag();
-			//trace(_isoView.c, _isoView.currentX, _isoView.currentY);
 		}
 		
 		private function onBgLoad(event:Event):void
@@ -107,6 +85,31 @@ package view.country
 			_isoView.setSize(_width, _height);
 			_isoView.centerOnPt(new Pt(370, 330, 0));
 			_isoView.visible = true;			
+		}
+		
+		private function onUpdate(event:UserDataEvent):void
+		{
+			var plantRenderer:PlantRenderer;
+			var isoSprite:IsoSprite;
+			for each(var plant:Plant in _userData.plants)
+			{
+				plantRenderer = new PlantRenderer();
+				plantRenderer.isNeedOffset = true;
+				plantRenderer.data = plant;
+				plantRenderer.buttonMode = true;
+				plantRenderer.isNeedListeners = true;
+				_plantRenderers[plant] = plantRenderer;
+				isoSprite = new IsoSprite();
+				isoSprite.sprites = [plantRenderer];
+				isoSprite.moveTo(plant.tileX * CELL_SIZE, plant.tileY * CELL_SIZE, 0);
+				_isoScene.addChild(isoSprite);
+			}
+			update();
+		}
+		
+		public function update():void
+		{
+			_isoScene.render();
 		}
 	}
 }

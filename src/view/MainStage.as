@@ -4,6 +4,8 @@ package view
 	
 	import lui.LUIWidget;
 	
+	import myLib.ui.STAGE;
+	
 	import view.country.CountryWidget;
 	import view.panel.PlantsPanel;
 
@@ -18,8 +20,12 @@ package view
 			_plantsPanel = new PlantsPanel();
 			_plantsPanel.addEventListener(Event.CHANGE, onPlantsPanelChange);
 			
+			PopupManager.modalBackgroundColor = 0x000000;
+			PopupManager.modalBackgroundAlpha = 0.3;			
+			
 			addChild(_country);
 			addChild(_plantsPanel);
+			addChild(PopupManager.layer);
 		}
 		
 		private function onPlantsPanelChange(event:Event):void
@@ -31,6 +37,7 @@ package view
 		{
 			_plantsPanel.x = 10;
 			_plantsPanel.y = _height - _plantsPanel.height - 10;
+			PopupManager.setScreenSize(_width, _height);
 		}
 	}
 }
