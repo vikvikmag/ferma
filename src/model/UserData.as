@@ -34,5 +34,10 @@ package model
 				}
 			}
 		}		
+		
+		public function get plants():Vector.<Plant>
+		{
+			return _plants;
+		}
 	}
 }

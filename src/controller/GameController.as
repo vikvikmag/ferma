@@ -69,13 +69,17 @@ package controller
 		{
 			var plant:Plant = (event.data as Plant).clone();
 			plant.level = 1;
+			// по идее идет обращение к серверу
 			_userData.addPlant(plant);
+			dispatchEvent(new UserDataEvent(UserDataEvent.UPDATE_USER_DATA));
 		}
 		
 		private function onPickUpPlant(event:UserDataEvent):void
 		{
 			var plant:Plant = event.data as Plant;
+			// по идее идет обращение к серверу
 			_userData.removePlant(plant);
+			dispatchEvent(new UserDataEvent(UserDataEvent.UPDATE_USER_DATA));
 		}
 	}
 }
