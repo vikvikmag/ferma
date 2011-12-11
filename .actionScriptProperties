@@ -27,10 +27,16 @@
         </excludedEntries>
       </libraryPathEntry>
       <libraryPathEntry kind="3" linkType="1" path="lib/greensock.swc" useDefaultLinkType="false"/>
+      <libraryPathEntry kind="3" linkType="1" path="lib/AsWing.swc" useDefaultLinkType="false"/>
+      <libraryPathEntry kind="3" linkType="1" path="lib/OrangeLAF.swc" useDefaultLinkType="false"/>
+      <libraryPathEntry kind="3" linkType="1" path="lib/SkinBuilderLAF.swc" useDefaultLinkType="false"/>
+      <libraryPathEntry kind="3" linkType="1" path="lib/Aeon.swc" useDefaultLinkType="false"/>
+      <libraryPathEntry kind="3" linkType="1" path="lib/myLib_0.7.8.swc" useDefaultLinkType="false"/>
     </libraryPath>
     <sourceAttachmentPath/>
   </compiler>
   <applications>
+    <application path="test/CelsiusConverter.as"/>
     <application path="ferma.as"/>
   </applications>
   <modules/>
