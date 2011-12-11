@@ -8,10 +8,13 @@ package
 	import controller.GameController;
 	
 	import flash.display.Sprite;
+	import flash.events.Event;
 	import flash.system.Security;
 	
 	import model.book.ImagesBook;
 	import model.book.PlantsBook;
+	
+	import myLib.ui.STAGE;
 	
 	import view.MainStage;
 	
@@ -54,10 +57,11 @@ package
 			_xml = LoaderMax.getContent("xmlDoc");
 			
 			PlantsBook.instance.init(_xml);
-			ImagesBook.instance.init(_xml);
-			GameController.instance.parseUserData(LoaderMax.getContent("xmlUserData"));
+			ImagesBook.instance.init(_xml);			
 			
 			initStage();
+			
+			GameController.instance.parseUserData(LoaderMax.getContent("xmlUserData"));
 		}
 		
 		private function errorHandler(event:LoaderEvent):void 
@@ -69,9 +73,22 @@ package
 		
 		private function initStage():void
 		{
-			_mainStage = new MainStage();
-			_mainStage.setSize(807, 700);
+			_mainStage = new MainStage();			
 			addChild(_mainStage);
+			if (stage == null)
+			{
+				addEventListener(Event.ADDED_TO_STAGE, onAddedToStage);
+			}
+			else
+			{
+				onAddedToStage();
+			}
+		}
+		
+		private function onAddedToStage(event:Event = null):void
+		{
+			removeEventListener(Event.ADDED_TO_STAGE, onAddedToStage);
+			_mainStage.setSize(stage.stageWidth, stage.stageHeight);
 		}
 	}
 }
