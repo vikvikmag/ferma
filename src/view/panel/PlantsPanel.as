@@ -1,5 +1,7 @@
 package view.panel
 {
+	import controller.GameController;
+	
 	import flash.display.Sprite;
 	import flash.events.Event;
 	import flash.events.MouseEvent;
@@ -8,6 +10,8 @@ package view.panel
 	
 	import model.book.PlantsBook;
 	import model.items.Plant;
+	
+	import myLib.controls.Button;
 	
 	import view.renderers.PlantRenderer;
 
@@ -23,6 +27,8 @@ package view.panel
 		
 		private var _container:Sprite = new Sprite();
 		private var _countLoaders:int = 0;
+		
+		private var _tickBtn:Button;
 		
 		public function PlantsPanel()
 		{
@@ -46,6 +52,15 @@ package view.panel
 			_container.addChild(_potatoRenderer);
 			_container.addChild(_sunflowerRenderer);
 			addChild(_container);
+			
+			_tickBtn = new Button(_container);
+			_tickBtn.text = "Сделать ход";
+			_tickBtn.addEventListener(MouseEvent.CLICK, onTickClick);
+		}
+		
+		private function onTickClick(event:MouseEvent):void
+		{
+			GameController.instance.tickTime();
 		}
 		
 		private function onPlant(event:MouseEvent):void
@@ -69,7 +84,8 @@ package view.panel
 		
 		override public function resize():void
 		{
-			_width = _cloverRenderer.width + _potatoRenderer.width + _sunflowerRenderer.width;
+			_width = _cloverRenderer.width + _potatoRenderer.width + _sunflowerRenderer.width + 
+				_tickBtn.width + 10;
 			_height = Math.max(_cloverRenderer.height, _potatoRenderer.height, _sunflowerRenderer.height);
 			
 			_cloverRenderer.x = 0;
@@ -78,6 +94,9 @@ package view.panel
 			_potatoRenderer.y = _height - _potatoRenderer.height;
 			_sunflowerRenderer.x = _potatoRenderer.x + _potatoRenderer.width;
 			_sunflowerRenderer.y = _height - _sunflowerRenderer.height;
+			
+			_tickBtn.x = _sunflowerRenderer.x + _sunflowerRenderer.width + 5;
+			_tickBtn.y = (_height - _tickBtn.height) / 2;
 			
 			graphics.clear();
 			graphics.beginFill(0xffffff, 0.6);
