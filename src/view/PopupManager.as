@@ -6,6 +6,8 @@ package view
 	import flash.events.Event;
 	import flash.filters.BlurFilter;
 	import flash.filters.ColorMatrixFilter;
+	import flash.geom.Point;
+	import flash.text.StaticText;
 	import flash.utils.Dictionary;
 	
 	public class PopupManager
@@ -31,7 +33,8 @@ package view
 			_layer = new Sprite();			
 		}
 		
-		public static function addPopUp(popUp:DisplayObject, modal:Boolean = true):void
+		public static function addPopUp(popUp:DisplayObject, modal:Boolean = true, 
+										position:Point = null):void
 		{
 			if (!_initialized)
 			{
@@ -56,6 +59,32 @@ package view
 				}
 			}
 			checkPopUpsBlocked();
+			checkPosition(popUp, position);
+		}
+		
+		private static function checkPosition(popUp:DisplayObject, position:Point):void
+		{
+			if (position != null)
+			{
+				popUp.x = position.x;
+				popUp.y = position.y;
+				if (popUp.x + popUp.width > _screenWidth)
+				{
+					popUp.x = _screenWidth - popUp.width - 5;
+				}
+				if (popUp.x < 0)
+				{
+					popUp.x = 5;
+				}
+				if (popUp.y + popUp.height > _screenHeight)
+				{
+					popUp.y = _screenHeight - popUp.height - 5;
+				}
+				if (popUp.y < 0)
+				{
+					popUp.y = 5;
+				}
+			}
 		}
 		
 		public static function addPopUpAnimated(
