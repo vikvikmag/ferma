@@ -67,7 +67,7 @@ package view.panel
 		{
 			var renderer:PlantRenderer = event.currentTarget as PlantRenderer;
 			var plant:Plant = renderer.data as Plant;
-			trace(plant.litName);
+			GameController.instance.beginCropPlant(plant);
 		}
 		
 		private function onResize(event:Event):void
