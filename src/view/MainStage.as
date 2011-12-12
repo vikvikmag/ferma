@@ -13,6 +13,8 @@ package view
 	{
 		private var _country:CountryWidget;		
 		private var _plantsPanel:PlantsPanel;
+		public static var WIDTH:int;
+		public static var HEIGHT:int;
 		
 		public function MainStage()
 		{
@@ -35,6 +37,8 @@ package view
 		
 		override public function resize():void
 		{
+			WIDTH = _width;
+			HEIGHT = _height;
 			_plantsPanel.x = 10;
 			_plantsPanel.y = _height - _plantsPanel.height - 10;
 			PopupManager.setScreenSize(_width, _height);
