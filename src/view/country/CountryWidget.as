@@ -11,6 +11,8 @@ package view.country
 	import flash.display.Sprite;
 	import flash.events.Event;
 	import flash.events.MouseEvent;
+	import flash.filters.ColorMatrixFilter;
+	import flash.geom.Point;
 	import flash.geom.Rectangle;
 	import flash.ui.Mouse;
 	import flash.ui.MouseCursor;
@@ -59,6 +61,7 @@ package view.country
 						
 			//for scene
 			_isoScene = new IsoScene();
+			_isoScene.layoutEnabled = true;
 			_isoScene.addChild(_isoGrid);
 			_isoScene.render();
 
@@ -69,12 +72,25 @@ package view.country
 			_isoView.visible = false;
 			_container.addChild(_isoView);
 			
-			_container.addEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);
-			_container.addEventListener(MouseEvent.MOUSE_UP, onMouseUp);
-			_container.addEventListener(MouseEvent.ROLL_OUT, onMouseUp);
+			addListenersContainer();
 			
 			GameController.instance.addEventListener(UserDataEvent.UPDATE_USER_DATA, onUpdate);
 			GameController.instance.addEventListener(UserDataEvent.PICK_UP_PLANT, onPickUpPlant);
+			GameController.instance.addEventListener(UserDataEvent.BEGIN_CROP_PLANT, onCropPlant);
+		}
+		
+		private function addListenersContainer():void
+		{
+			_container.addEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);
+			_container.addEventListener(MouseEvent.MOUSE_UP, onMouseUp);
+			_container.addEventListener(MouseEvent.ROLL_OUT, onMouseUp);
+		}	
+		
+		private function removeListenersContainer():void
+		{
+			_container.removeEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);
+			_container.removeEventListener(MouseEvent.MOUSE_UP, onMouseUp);
+			_container.removeEventListener(MouseEvent.ROLL_OUT, onMouseUp);
 		}
 		
 		private function onMouseDown(event:MouseEvent):void
@@ -136,6 +152,78 @@ package view.country
 			update();
 		}
 		
+		private var _cropRenderer:PlantRenderer;
+		private function onCropPlant(event:UserDataEvent):void
+		{
+			var plant:Plant = event.data as Plant;
+			_cropRenderer = new PlantRenderer();
+			_cropRenderer.isNeedOffset = true;
+			_cropRenderer.data = plant;
+			addChild(_cropRenderer);
+			
+			removeListenersContainer();
+			_container.mouseChildren = false;
+			
+			addEventListener(Event.ENTER_FRAME, onBeginCropPlantEnterFrame);
+			addEventListener(MouseEvent.CLICK, onCropClick);
+		}
+		
+		private function onBeginCropPlantEnterFrame(event:Event):void
+		{
+			_cropRenderer.x = mouseX;
+			_cropRenderer.y = mouseY;
+			checkCropRenderers();
+		}
+		
+		private var _cropPt:Pt;
+		private function checkCropRenderers():Boolean
+		{
+			_cropPt = _isoView.localToIso(new Point(_isoView.mouseX, _isoView.mouseY));
+			_cropPt.x = Math.round(_cropPt.x / CELL_SIZE);
+			_cropPt.y = Math.round(_cropPt.y / CELL_SIZE);
+			if (_userData.getPlantUnderPoint(new Point(_cropPt.x, _cropPt.y)) != null)
+			{
+				_cropRenderer.filters = [new ColorMatrixFilter([
+					1.3, 0, 0, 0, 0,
+					0, 0, 0, 0, 0,
+					0, 0, 0, 0, 0,
+					0, 0, 0, 1, 0
+				])];
+				return false;
+			}
+			else if (!(_cropPt.x >= 0 && _cropPt.x <= 13 && _cropPt.y >= 0 && _cropPt.y <= 13))
+			{
+				_cropRenderer.filters = [new ColorMatrixFilter([
+					1.3, 0, 0, 0, 0,
+					0, 0, 0, 0, 0,
+					0, 0, 0, 0, 0,
+					0, 0, 0, 1, 0
+				])];
+				return false;
+			}
+			else
+			{
+				_cropRenderer.filters = null;
+				return true;
+			}
+		}
+		
+		private function onCropClick(event:MouseEvent):void
+		{
+			removeEventListener(Event.ENTER_FRAME, onBeginCropPlantEnterFrame);
+			removeEventListener(MouseEvent.CLICK, onCropClick);
+			removeChild(_cropRenderer);
+			addListenersContainer();
+			_container.mouseChildren = true;
+			if (checkCropRenderers())
+			{
+				var plant:Plant = _cropRenderer.data as Plant;
+				plant.tileX = _cropPt.x;
+				plant.tileY = _cropPt.y;
+				GameController.instance.endCropPlant(plant);
+			}			
+		}
+		
 		private function onUpdate(event:UserDataEvent):void
 		{
 			var plantRenderer:PlantRenderer;
@@ -158,6 +246,7 @@ package view.country
 				if (isoSprite == null)
 				{
 					isoSprite = new IsoSprite();
+					isoSprite.setSize(CELL_SIZE, CELL_SIZE, CELL_SIZE);
 					isoSprite.sprites = [plantRenderer];
 					_isoSprites[plant] = isoSprite;
 					_isoScene.addChild(isoSprite);
