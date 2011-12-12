@@ -26,7 +26,8 @@ package view.renderers
 		{			
 			addChild(_container);
 			_imageResource = new ImageResource("BG");
-			_imageResource.setListeners(onComplete, onError, onProgress);			
+			_imageResource.setListeners(onComplete, onError, onProgress);
+			_imageResource.load();
 		}
 		
 		private function onComplete(event:LoaderEvent):void

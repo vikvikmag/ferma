@@ -2,6 +2,8 @@ package view.renderers
 {
 	import com.greensock.events.LoaderEvent;
 	
+	import controller.GameController;
+	
 	import flash.display.Bitmap;
 	import flash.events.Event;
 	import flash.events.MouseEvent;
@@ -18,6 +20,8 @@ package view.renderers
 	import resources.ImageResource;
 	
 	import view.PopupManager;
+	import view.windows.PickUpWindow;
+	import view.windows.events.WindowEvent;
 
 	public class PlantRenderer extends LUIWidget
 	{
@@ -25,17 +29,13 @@ package view.renderers
 		private var _data:Object;
 		private var _iconPlant:Bitmap;
 		private var _iconContainer:LUIWidget = new LUIWidget();
-		private var _btnContainer:LUIWidget = new LUIWidget();
 		private var _level:int;
 		private var _isNeedOffset:Boolean = false;
 		private var _isNeedListeners:Boolean = false;
-		private var _pickUpBtn:Button;
-		private var _cancel:Button;
 		
 		public function PlantRenderer()
 		{
 			addChild(_iconContainer);
-			addChild(_btnContainer);
 		}
 		
 		public function set isNeedOffset(value:Boolean):void
@@ -53,25 +53,12 @@ package view.renderers
 			_isNeedListeners = value;
 			if (_isNeedListeners)
 			{
-				addListeners();
-				creatBtns();				
+				addListeners();				
 			}
 			else
 			{
 				removeListeners();
 			}
-		}
-		
-		/**
-		 * 	Создает дополнительные кнопки. "Собрать урожай"
-		 */ 
-		private function creatBtns():void
-		{
-			_pickUpBtn = new Button();
-			_pickUpBtn.text = "Собрать урожай";
-			_cancel = new Button();
-			_cancel.text = "Отмена";
-			_cancel.addEventListener(MouseEvent.CLICK, onCancelClick);
 		}
 		
 		public function get isNeedListeners():Boolean
@@ -105,24 +92,16 @@ package view.renderers
 		
 		private function onClickRenderer(event:MouseEvent):void
 		{
-			var point:Point = localToGlobal(new Point(x,y)); 
-			_pickUpBtn.x = point.x;
-			_pickUpBtn.y = point.y;
-			_cancel.x = point.x;
-			_cancel.y = point.y + _pickUpBtn.height + 5;
-			
-			_btnContainer.addChild(_pickUpBtn);
-			_btnContainer.addChild(_cancel);
-			//PopupManager.addPopUp(_pickUpBtn);
-			//PopupManager.addPopUp(_cancel, false);
-		}
+			var point:Point = localToGlobal(new Point(x,y));
+			var pickUpWindow:PickUpWindow = new PickUpWindow();
+			pickUpWindow.setPosition(point);
+			pickUpWindow.addEventListener(WindowEvent.CLICK_BUTTON, onPickUpClick);
+			pickUpWindow.open();			
+		}		
 		
-		private function onCancelClick(event:MouseEvent):void
+		private function onPickUpClick(event:WindowEvent):void
 		{
-			_btnContainer.removeChild(_pickUpBtn);
-			_btnContainer.removeChild(_cancel);
-			//PopupManager.removePopUp(_pickUpBtn);
-			//PopupManager.removePopUp(_cancel);
+			GameController.instance.pickUpPlant(_data as Plant);
 		}
 		
 		public function set data(value:Object):void
@@ -135,6 +114,7 @@ package view.renderers
 			_level = (_data as Plant).level;
 			_imageResource = new ImageResource((_data as Plant).type + String(_level));
 			_imageResource.setListeners(onComplete);
+			_imageResource.load();
 		}
 		
 		public function get data():Object
@@ -158,15 +138,17 @@ package view.renderers
 		{
 			if (_data != null && _level != (_data as Plant).level)
 			{
+				_level = (_data as Plant).level;
 				_imageResource = new ImageResource((_data as Plant).type + String(_level));
 				_imageResource.setListeners(onComplete);
+				_imageResource.load();
 			}
 		}		
 		
 		override public function resize():void
 		{
-			_iconContainer.width = _btnContainer.width = _width = _iconPlant.width;
-			_iconContainer.height = _btnContainer.height = _height = _iconPlant.height;
+			_iconContainer.width = _width = _iconPlant.width;
+			_iconContainer.height = _height = _iconPlant.height;
 			if (_isNeedOffset)
 			{
 				var imageProp:ImageProperty = (data as Plant).imageProperty;

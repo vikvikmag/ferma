@@ -23,19 +23,35 @@ package resources
 			_imageLoader = LoaderMax.getLoader(type);
 			_imageLoader.addEventListener(LoaderEvent.COMPLETE, onComplete);
 			_imageLoader.addEventListener(LoaderEvent.ERROR, onError);
-			_imageLoader.addEventListener(LoaderEvent.PROGRESS, onProgress);
+			_imageLoader.addEventListener(LoaderEvent.PROGRESS, onProgress);			
+		}
+		
+		public function load():void
+		{
 			_imageLoader.load();
 		}
 		
 		/**
 		 * 	Можно установить обработчики событий
 		 */ 
-		public function setListeners(onComplete:Function, onError:Function = null, 
-									 onProgress:Function = null):void
+		public function setListeners(onCompleteN:Function, onErrorN:Function = null, 
+									 onProgressN:Function = null):void
 		{
-			_onComplete = onComplete;
-			_onError = onError;
-			_onProgress = onProgress;
+			_onComplete = onCompleteN;
+			_onError = onErrorN;
+			_onProgress = onProgressN;
+			if (!_imageLoader.hasEventListener(LoaderEvent.COMPLETE))
+			{
+				_imageLoader.addEventListener(LoaderEvent.COMPLETE, onComplete);
+			}
+			if (!_imageLoader.hasEventListener(LoaderEvent.ERROR))
+			{
+				_imageLoader.addEventListener(LoaderEvent.ERROR, onError);
+			}
+			if (!_imageLoader.hasEventListener(LoaderEvent.PROGRESS))
+			{
+				_imageLoader.addEventListener(LoaderEvent.PROGRESS, onProgress);
+			}
 		}
 		
 		/**
