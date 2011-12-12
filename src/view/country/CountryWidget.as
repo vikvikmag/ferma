@@ -2,7 +2,6 @@ package view.country
 {
 	import as3isolib.display.IsoSprite;
 	import as3isolib.display.IsoView;
-	import as3isolib.display.primitive.IsoBox;
 	import as3isolib.display.scene.IsoGrid;
 	import as3isolib.display.scene.IsoScene;
 	import as3isolib.geom.Pt;
@@ -12,6 +11,9 @@ package view.country
 	import flash.display.Sprite;
 	import flash.events.Event;
 	import flash.events.MouseEvent;
+	import flash.geom.Rectangle;
+	import flash.ui.Mouse;
+	import flash.ui.MouseCursor;
 	import flash.utils.Dictionary;
 	
 	import lui.LUIWidget;
@@ -20,6 +22,7 @@ package view.country
 	import model.event.UserDataEvent;
 	import model.items.Plant;
 	
+	import view.MainStage;
 	import view.renderers.CountryRenderer;
 	import view.renderers.PlantRenderer;
 
@@ -30,11 +33,15 @@ package view.country
 		private var _bg:CountryRenderer;
 		private var _isoGrid:IsoGrid;
 		private var _isoScene:IsoScene;
-		private var _box:IsoBox;
 		private var _isoView:IsoView;
 		private var _container:Sprite = new Sprite();
 		private var _userData:UserData = GameController.instance.userData;
 		private var _plantRenderers:Dictionary = new Dictionary();
+		private var _isoSprites:Dictionary = new Dictionary();
+		private var _mouseXOld:int;
+		private var _mouseYOld:int;
+		private const DELTA:int = 15;
+		private var _recDrag:Rectangle;
 		
 		public function CountryWidget()
 		{
@@ -67,24 +74,66 @@ package view.country
 			_container.addEventListener(MouseEvent.ROLL_OUT, onMouseUp);
 			
 			GameController.instance.addEventListener(UserDataEvent.UPDATE_USER_DATA, onUpdate);
+			GameController.instance.addEventListener(UserDataEvent.PICK_UP_PLANT, onPickUpPlant);
 		}
 		
 		private function onMouseDown(event:MouseEvent):void
+		{		
+			_mouseXOld = mouseX;
+			_mouseYOld = mouseY;
+			_container.addEventListener(Event.ENTER_FRAME, onEnterFrameDrag);
+		}
+		
+		private function onEnterFrameDrag(event:Event):void
 		{
-			_container.startDrag();
+			if (Math.abs(_mouseXOld - mouseX) > DELTA || 
+				Math.abs(_mouseYOld - mouseY) > DELTA)
+			{
+				startDragContainer();
+			}
+		}
+		
+		private function startDragContainer():void
+		{			
+			_container.removeEventListener(Event.ENTER_FRAME, onEnterFrameDrag);
+			Mouse.cursor = MouseCursor.HAND;
+			_container.mouseChildren = false;
+			_container.startDrag(false, _recDrag);
 		}
 		
 		private function onMouseUp(event:MouseEvent):void
 		{
+			_container.removeEventListener(Event.ENTER_FRAME, onEnterFrameDrag);
+			Mouse.cursor = MouseCursor.AUTO;
+			_container.mouseChildren = true;
+			
 			_container.stopDrag();
 		}
 		
 		private function onBgLoad(event:Event):void
 		{
 			setSize(_bg.width, _bg.height);
+			var left:int = MainStage.WIDTH - _container.width;
+			left = left > 0 ? (MainStage.WIDTH - _container.width) / 2 : left;
+			var right:int = MainStage.WIDTH - _container.width < 0 ? Math.abs(left) : 0;
+			var top:int = MainStage.HEIGHT - _container.height;
+			top = top > 0 ? (MainStage.HEIGHT - _container.height) / 2 : top;
+			var bottom:int = MainStage.HEIGHT - _container.height < 0 ? Math.abs(top) : 0;
+			_recDrag = new Rectangle(left, top,	right, bottom);
 			_isoView.setSize(_width, _height);
 			_isoView.centerOnPt(new Pt(370, 330, 0));
 			_isoView.visible = true;			
+		}
+		
+		private function onPickUpPlant(event:UserDataEvent):void
+		{
+			var plant:Plant = event.data as Plant;
+			var plantRenderer:PlantRenderer = _plantRenderers[plant];
+			var isoSprite:IsoSprite = _isoSprites[plant];
+			_isoScene.removeChild(isoSprite);
+			delete _plantRenderers[plant];
+			delete _isoSprites[plant];
+			update();
 		}
 		
 		private function onUpdate(event:UserDataEvent):void
@@ -93,16 +142,27 @@ package view.country
 			var isoSprite:IsoSprite;
 			for each(var plant:Plant in _userData.plants)
 			{
-				plantRenderer = new PlantRenderer();
-				plantRenderer.isNeedOffset = true;
-				plantRenderer.data = plant;
-				plantRenderer.buttonMode = true;
-				plantRenderer.isNeedListeners = true;
-				_plantRenderers[plant] = plantRenderer;
-				isoSprite = new IsoSprite();
-				isoSprite.sprites = [plantRenderer];
-				isoSprite.moveTo(plant.tileX * CELL_SIZE, plant.tileY * CELL_SIZE, 0);
-				_isoScene.addChild(isoSprite);
+				plantRenderer = _plantRenderers[plant];
+				if (plantRenderer == null)
+				{
+					plantRenderer = new PlantRenderer();
+					plantRenderer.isNeedOffset = true;
+					plantRenderer.data = plant;
+					plantRenderer.buttonMode = true;
+					plantRenderer.isNeedListeners = true;
+					_plantRenderers[plant] = plantRenderer;
+				}
+				plantRenderer.update();
+				
+				isoSprite = _isoSprites[plant];
+				if (isoSprite == null)
+				{
+					isoSprite = new IsoSprite();
+					isoSprite.sprites = [plantRenderer];
+					_isoSprites[plant] = isoSprite;
+					_isoScene.addChild(isoSprite);
+				}				
+				isoSprite.moveTo(plant.tileX * CELL_SIZE, plant.tileY * CELL_SIZE, 0);								
 			}
 			update();
 		}
