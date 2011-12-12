@@ -64,6 +64,19 @@ package controller
 			}
 		}
 		
+		public function beginCropPlant(plant:Plant):void
+		{
+			var cropPlant:Plant = plant.clone();
+			cropPlant.level = 1;
+			dispatchEvent(new UserDataEvent(UserDataEvent.BEGIN_CROP_PLANT, cropPlant));
+		}
+		
+		public function endCropPlant(plant:Plant):void
+		{
+			_userData.addPlant(plant);
+			dispatchEvent(new UserDataEvent(UserDataEvent.UPDATE_USER_DATA));
+		}
+		
 		public function tickTime():void
 		{
 			_countTime++;
