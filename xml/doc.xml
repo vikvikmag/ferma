@@ -1,5 +1,4 @@
-﻿<?xml version="1.0" encoding="iso-8859-1"?> 
-<data>
+﻿<data>
 	<LoaderMax name="dynamicLoaderMax" load="false">
 		<ImageLoader name="clover1" url="../html/img/clover/1.png" cx="48" cy="50" />
 		<ImageLoader name="clover2" url="../html/img/clover/2.png" cx="48" cy="4" />

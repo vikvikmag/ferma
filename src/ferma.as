@@ -37,8 +37,9 @@ package
 		
 		private function initData():void
 		{
-			_loader.append(new XMLLoader("../xml/doc.xml", {name:"xmlDoc"}));
-			_loader.append(new XMLLoader("../xml/UserData.xml", {name:"xmlUserData"}));
+			//http://vikvikmag.narod2.ru
+			_loader.append(new XMLLoader("http://vikvikmag.hut2.ru/xml/doc.xml", {name:"xmlDoc"}));
+			_loader.append(new XMLLoader("http://vikvikmag.hut2.ru/xml/userData.xml", {name:"xmlUserData"}));
 			_loader.load();
 		}
 		
