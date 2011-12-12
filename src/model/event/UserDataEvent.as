@@ -5,7 +5,8 @@ package model.event
 	public class UserDataEvent extends Event
 	{
 		public static const UPDATE_USER_DATA:String = "updateUserData";
-		public static const CROP_PLANT:String = "cropPlant";
+		public static const BEGIN_CROP_PLANT:String = "beginCropPlant";
+		public static const END_CROP_PLANT:String = "endCropPlant";
 		public static const PICK_UP_PLANT:String = "pickUpPlant";
 		
 		private var _data:Object;
