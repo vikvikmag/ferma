@@ -156,6 +156,11 @@ package view.country
 		private function onCropPlant(event:UserDataEvent):void
 		{
 			var plant:Plant = event.data as Plant;
+			if (_cropRenderer != null && contains(_cropRenderer))
+			{
+				removeChild(_cropRenderer);
+				_cropRenderer = null;
+			}
 			_cropRenderer = new PlantRenderer();
 			_cropRenderer.isNeedOffset = true;
 			_cropRenderer.data = plant;
