@@ -5,11 +5,13 @@ package controller
 	import model.UserData;
 	import model.book.PlantsBook;
 	import model.event.UserDataEvent;
+	import model.farmGrid.FarmGrid;
 	import model.items.Plant;
 
 	public class GameController extends EventDispatcher
 	{
-		private var _userData:UserData = new UserData();		
+		private var _userData:UserData;
+		private var _farmGrid:FarmGrid;
 		
 		private static var _instance:GameController;
 		public static function get instance():GameController
@@ -25,11 +27,18 @@ package controller
 		
 		public function GameController()
 		{
+			_userData = new UserData();
+			_farmGrid = new FarmGrid(_userData);
 		}
 		
 		public function get userData():UserData
 		{
 			return _userData;
+		}
+		
+		public function get farmGrid():FarmGrid
+		{
+			return _farmGrid;
 		}
 		
 		public function parseUserData(xml:XML):void
@@ -40,7 +49,7 @@ package controller
 				plant.level = node.@level;
 				if (plant.level <= 0 || plant.level > 5)
 				{
-					throw new Error("Сервер нагло врёт! Уровень растений не может равняться :" + 
+					throw new Error("Сервер нагло врёт! Уровень растений не может равняться: " + 
 						String(plant.level));
 				}
 				plant.serverId = node.@id;
@@ -48,14 +57,19 @@ package controller
 				plant.tileY = node.@y;
 				_userData.addPlant(plant);
 			}
+			_farmGrid.update();
 			dispatchEvent(new UserDataEvent(UserDataEvent.UPDATE_USER_DATA));
 		}
 		
+		/**
+		 *  Собрать растение
+		 */ 
 		public function pickUpPlant(plant:Plant):void
 		{
 			if (_userData.plants.indexOf(plant) != -1)
 			{
 				_userData.removePlant(plant);
+				_farmGrid.update();
 				dispatchEvent(new UserDataEvent(UserDataEvent.PICK_UP_PLANT, plant));
 			}
 			else
@@ -74,6 +88,7 @@ package controller
 		public function endCropPlant(plant:Plant):void
 		{
 			_userData.addPlant(plant);
+			_farmGrid.update();
 			dispatchEvent(new UserDataEvent(UserDataEvent.UPDATE_USER_DATA));
 		}
 		
@@ -88,23 +103,6 @@ package controller
 		public function get countTime():int
 		{
 			return _countTime;
-		}
-		
-		private function onCropPlant(event:UserDataEvent):void
-		{
-			var plant:Plant = (event.data as Plant).clone();
-			plant.level = 1;
-			// по идее идет обращение к серверу
-			_userData.addPlant(plant);
-			dispatchEvent(new UserDataEvent(UserDataEvent.UPDATE_USER_DATA));
-		}
-		
-		private function onPickUpPlant(event:UserDataEvent):void
-		{
-			var plant:Plant = event.data as Plant;
-			// по идее идет обращение к серверу
-			_userData.removePlant(plant);
-			dispatchEvent(new UserDataEvent(UserDataEvent.UPDATE_USER_DATA));
 		}
 	}
 }

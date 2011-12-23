@@ -2,11 +2,19 @@ package view.country
 {
 	import as3isolib.display.IsoSprite;
 	import as3isolib.display.IsoView;
+	import as3isolib.display.primitive.IsoBox;
 	import as3isolib.display.scene.IsoGrid;
 	import as3isolib.display.scene.IsoScene;
+	import as3isolib.geom.IsoMath;
 	import as3isolib.geom.Pt;
 	
+	import com.greensock.TimelineLite;
+	import com.greensock.TweenLite;
+	import com.greensock.easing.Linear;
+	
 	import controller.GameController;
+	
+	import eDpLib.events.ProxyEvent;
 	
 	import flash.display.Sprite;
 	import flash.events.Event;
@@ -22,6 +30,7 @@ package view.country
 	
 	import model.UserData;
 	import model.event.UserDataEvent;
+	import model.farmGrid.FarmGrid;
 	import model.items.Plant;
 	
 	import view.MainStage;
@@ -30,7 +39,7 @@ package view.country
 
 	public class CountryWidget extends LUIWidget
 	{
-		private var CELL_SIZE:int = 50;
+		private var CELL_SIZE:int = FarmGrid.CELL_SIZE;
 		
 		private var _bg:CountryRenderer;
 		private var _isoGrid:IsoGrid;
@@ -38,6 +47,7 @@ package view.country
 		private var _isoView:IsoView;
 		private var _container:Sprite = new Sprite();
 		private var _userData:UserData = GameController.instance.userData;
+		private var _farmGrid:FarmGrid = GameController.instance.farmGrid;
 		private var _plantRenderers:Dictionary = new Dictionary();
 		private var _isoSprites:Dictionary = new Dictionary();
 		private var _mouseXOld:int;
@@ -45,10 +55,14 @@ package view.country
 		private const DELTA:int = 15;
 		private var _recDrag:Rectangle;
 		
+		private var _hero:IsoBox = new IsoBox();
+		
+		private var _timeLine:TimelineLite = new TimelineLite();
+		
 		public function CountryWidget()
 		{
 			addChild(_container);
-					
+								
 			_bg = new CountryRenderer();
 			_bg.addEventListener(Event.COMPLETE, onBgLoad);
 			_container.addChild(_bg);
@@ -56,18 +70,23 @@ package view.country
 			//for grid
 			_isoGrid = new IsoGrid()
 			_isoGrid.showOrigin = true;
-			_isoGrid.setGridSize(13,13,1);
+			_isoGrid.setGridSize(FarmGrid.COUNT_COLS, FarmGrid.COUNT_ROWS, 1);
 			_isoGrid.cellSize = CELL_SIZE;
+			_isoGrid.addEventListener(MouseEvent.CLICK, onGridClick);
 						
 			//for scene
 			_isoScene = new IsoScene();
 			_isoScene.layoutEnabled = true;
-			_isoScene.addChild(_isoGrid);
+			_isoScene.addChild(_isoGrid);			
+			
+			_hero.setSize(CELL_SIZE, CELL_SIZE, 2 * CELL_SIZE);
+			_hero.moveTo(5 * CELL_SIZE, 5 * CELL_SIZE, 0);
+			_isoScene.addChild(_hero);			
 			_isoScene.render();
-
+			
 			//for view
 			_isoView = new IsoView();
-			_isoView.addScene(_isoScene);
+			_isoView.addScene(_isoScene);			
 			
 			_isoView.visible = false;
 			_container.addChild(_isoView);
@@ -91,6 +110,37 @@ package view.country
 			_container.removeEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);
 			_container.removeEventListener(MouseEvent.MOUSE_UP, onMouseUp);
 			_container.removeEventListener(MouseEvent.ROLL_OUT, onMouseUp);
+		}
+		
+		private const HERO_SPEED:Number = .3;
+		private function onGridClick(event:ProxyEvent):void
+		{
+			var mEvt:MouseEvent = MouseEvent(event.targetEvent);
+			var pt:Pt = new Pt(mEvt.localX, mEvt.localY);
+			IsoMath.screenToIso(pt);
+			pt.x = Math.floor(pt.x / CELL_SIZE) * CELL_SIZE;
+			pt.y = Math.floor(pt.y / CELL_SIZE) * CELL_SIZE;
+			
+			var path:Array = _farmGrid.findPath(_hero.x/CELL_SIZE, _hero.y/CELL_SIZE, 
+				pt.x/CELL_SIZE, pt.y/CELL_SIZE);
+			
+			if (path != null)
+			{
+				var tween:TweenLite;
+				_timeLine = new TimelineLite({onUpdate:moveHero});
+				for (var i:int = 1; i < path.length; i++)
+				{
+					tween = new TweenLite(_hero, HERO_SPEED, {x:path[i].x*CELL_SIZE, 
+						y:path[i].y*CELL_SIZE, ease:Linear.easeNone});
+					_timeLine.append(tween);
+				}
+				_timeLine.play();
+			}
+		}
+		
+		private function moveHero():void
+		{
+			_isoScene.render();
 		}
 		
 		private function onMouseDown(event:MouseEvent):void
