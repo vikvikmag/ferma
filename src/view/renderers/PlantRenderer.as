@@ -26,15 +26,15 @@ package view.renderers
 		private var _imageResource:ImageResource;
 		private var _data:Object;
 		private var _iconPlant:Bitmap;
-		private var _iconMc:InteractivePNG = new InteractivePNG();
-		private var _iconContainer:LUIWidget = new LUIWidget();
+		//private var _iconMc:InteractivePNG = new InteractivePNG();
+		private var _iconContainer:InteractivePNG = new InteractivePNG();
 		private var _level:int;
 		private var _isNeedOffset:Boolean = false;
 		private var _isNeedListeners:Boolean = false;
 		
 		public function PlantRenderer()
 		{
-			_iconContainer.addChild(_iconMc);
+			//_iconContainer.addChild(_iconMc);
 			addChild(_iconContainer);
 		}
 		
@@ -68,16 +68,16 @@ package view.renderers
 		
 		private function addListeners():void
 		{
-			_iconMc.addEventListener(MouseEvent.ROLL_OVER, onRollOverRenderer);
-			_iconMc.addEventListener(MouseEvent.ROLL_OUT, onRollOutRenderer);
-			_iconMc.addEventListener(MouseEvent.CLICK, onClickRenderer);
+			_iconContainer.addEventListener(MouseEvent.ROLL_OVER, onRollOverRenderer);
+			_iconContainer.addEventListener(MouseEvent.ROLL_OUT, onRollOutRenderer);
+			_iconContainer.addEventListener(MouseEvent.CLICK, onClickRenderer);
 		}
 		
 		private function removeListeners():void
 		{
-			_iconMc.removeEventListener(MouseEvent.ROLL_OVER, onRollOverRenderer);
-			_iconMc.removeEventListener(MouseEvent.ROLL_OUT, onRollOutRenderer);
-			_iconMc.removeEventListener(MouseEvent.CLICK, onClickRenderer);
+			_iconContainer.removeEventListener(MouseEvent.ROLL_OVER, onRollOverRenderer);
+			_iconContainer.removeEventListener(MouseEvent.ROLL_OUT, onRollOutRenderer);
+			_iconContainer.removeEventListener(MouseEvent.CLICK, onClickRenderer);
 		}
 		
 		private function onRollOverRenderer(event:MouseEvent):void
@@ -124,13 +124,13 @@ package view.renderers
 		
 		private function onComplete(event:LoaderEvent):void
 		{
-			if (_iconPlant != null && _iconMc.contains(_iconPlant))
+			if (_iconPlant != null && _iconContainer.contains(_iconPlant))
 			{
-				_iconMc.removeChild(_iconPlant);
+				_iconContainer.removeChild(_iconPlant);
 			}
 			_iconPlant = _imageResource.bitmap;
-			_iconMc.addChild(_iconPlant);
-			_iconMc.drawBitmapHitArea();
+			_iconContainer.addChild(_iconPlant);
+			_iconContainer.drawBitmapHitArea();
 			resize();
 			dispatchEvent(new Event(Event.COMPLETE));
 		}
@@ -148,7 +148,7 @@ package view.renderers
 		
 		override public function set buttonMode(value:Boolean):void
 		{
-			_iconMc.buttonMode = value;
+			_iconContainer.buttonMode = value;
 		}
 		
 		override public function resize():void

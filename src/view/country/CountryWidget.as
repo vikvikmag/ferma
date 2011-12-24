@@ -39,7 +39,8 @@ package view.country
 
 	public class CountryWidget extends LUIWidget
 	{
-		private var CELL_SIZE:int = FarmGrid.CELL_SIZE;
+		private const CELL_SIZE:int = FarmGrid.CELL_SIZE;
+		private const HERO_SPEED:Number = .3;
 		
 		private var _bg:CountryRenderer;
 		private var _isoGrid:IsoGrid;
@@ -72,7 +73,7 @@ package view.country
 			_isoGrid.showOrigin = true;
 			_isoGrid.setGridSize(FarmGrid.COUNT_COLS, FarmGrid.COUNT_ROWS, 1);
 			_isoGrid.cellSize = CELL_SIZE;
-			_isoGrid.addEventListener(MouseEvent.CLICK, onGridClick);
+			//_isoGrid.addEventListener(MouseEvent.CLICK, onGridClick);
 						
 			//for scene
 			_isoScene = new IsoScene();
@@ -103,6 +104,7 @@ package view.country
 			_container.addEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);
 			_container.addEventListener(MouseEvent.MOUSE_UP, onMouseUp);
 			_container.addEventListener(MouseEvent.ROLL_OUT, onMouseUp);
+			_container.addEventListener(MouseEvent.CLICK, onContainerClick);
 		}	
 		
 		private function removeListenersContainer():void
@@ -112,17 +114,13 @@ package view.country
 			_container.removeEventListener(MouseEvent.ROLL_OUT, onMouseUp);
 		}
 		
-		private const HERO_SPEED:Number = .3;
-		private function onGridClick(event:ProxyEvent):void
+		private function onContainerClick(event:MouseEvent):void
 		{
-			var mEvt:MouseEvent = MouseEvent(event.targetEvent);
-			var pt:Pt = new Pt(mEvt.localX, mEvt.localY);
-			IsoMath.screenToIso(pt);
-			pt.x = Math.floor(pt.x / CELL_SIZE) * CELL_SIZE;
-			pt.y = Math.floor(pt.y / CELL_SIZE) * CELL_SIZE;
-			
+			var pt:Pt = _isoView.localToIso(new Point(_isoView.mouseX, _isoView.mouseY));
+			pt.x = Math.floor(pt.x / CELL_SIZE);
+			pt.y = Math.floor(pt.y / CELL_SIZE);
 			var path:Array = _farmGrid.findPath(_hero.x/CELL_SIZE, _hero.y/CELL_SIZE, 
-				pt.x/CELL_SIZE, pt.y/CELL_SIZE);
+				pt.x, pt.y);
 			
 			if (path != null)
 			{
@@ -137,6 +135,15 @@ package view.country
 				_timeLine.play();
 			}
 		}
+		
+		/*private function onGridClick(event:ProxyEvent):void 		на будущее, как получить координаты от сетки
+		{
+			var mEvt:MouseEvent = MouseEvent(event.targetEvent);
+			var pt:Pt = new Pt(mEvt.localX, mEvt.localY);
+			IsoMath.screenToIso(pt);
+			pt.x = Math.floor(pt.x / CELL_SIZE);
+			pt.y = Math.floor(pt.y / CELL_SIZE);
+		}*/
 		
 		private function moveHero():void
 		{
@@ -234,8 +241,8 @@ package view.country
 		private function checkCropRenderers():Boolean
 		{
 			_cropPt = _isoView.localToIso(new Point(_isoView.mouseX, _isoView.mouseY));
-			_cropPt.x = Math.round(_cropPt.x / CELL_SIZE);
-			_cropPt.y = Math.round(_cropPt.y / CELL_SIZE);
+			_cropPt.x = Math.floor(_cropPt.x / CELL_SIZE);
+			_cropPt.y = Math.floor(_cropPt.y / CELL_SIZE);
 			if (_userData.getPlantUnderPoint(new Point(_cropPt.x, _cropPt.y)) != null)
 			{
 				_cropRenderer.filters = [new ColorMatrixFilter([
