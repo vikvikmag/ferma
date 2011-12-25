@@ -10,6 +10,8 @@ package controller
 
 	public class GameController extends EventDispatcher
 	{
+		public static const VERSION:String = "build 1.2";
+		
 		private var _userData:UserData;
 		private var _farmGrid:FarmGrid;
 		

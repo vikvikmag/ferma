@@ -5,6 +5,7 @@ package view.panel
 	import flash.display.Sprite;
 	import flash.events.Event;
 	import flash.events.MouseEvent;
+	import flash.text.TextField;
 	
 	import lui.LUIWidget;
 	
@@ -29,6 +30,7 @@ package view.panel
 		private var _countLoaders:int = 0;
 		
 		private var _tickBtn:Button;
+		private var _version:TextField = new TextField();
 		
 		public function PlantsPanel()
 		{
@@ -48,6 +50,9 @@ package view.panel
 			_potatoRenderer.data = _potato;
 			_sunflowerRenderer.data = _sunflower;
 			
+			_version.text = GameController.VERSION;
+			
+			_container.addChild(_version);
 			_container.addChild(_cloverRenderer);
 			_container.addChild(_potatoRenderer);
 			_container.addChild(_sunflowerRenderer);
@@ -87,6 +92,9 @@ package view.panel
 			_width = _cloverRenderer.width + _potatoRenderer.width + _sunflowerRenderer.width + 
 				_tickBtn.width + 10;
 			_height = Math.max(_cloverRenderer.height, _potatoRenderer.height, _sunflowerRenderer.height);
+			
+			_version.x = 10;
+			_version.y = 10;
 			
 			_cloverRenderer.x = 0;
 			_cloverRenderer.y = _height - _cloverRenderer.height;
