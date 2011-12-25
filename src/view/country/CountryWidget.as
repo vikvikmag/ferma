@@ -119,6 +119,10 @@ package view.country
 			var pt:Pt = _isoView.localToIso(new Point(_isoView.mouseX, _isoView.mouseY));
 			pt.x = Math.floor(pt.x / CELL_SIZE);
 			pt.y = Math.floor(pt.y / CELL_SIZE);
+			if (!(pt.x>=0 && pt.x<FarmGrid.COUNT_ROWS) || !(pt.y>=0 && pt.y<FarmGrid.COUNT_COLS))
+			{
+				return;
+			}
 			var path:Array = _farmGrid.findPath(_hero.x/CELL_SIZE, _hero.y/CELL_SIZE, 
 				pt.x, pt.y);
 			
